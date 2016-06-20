@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#
+# HTML template for index.html
+
+cat << _EOF_
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="quote.css">
+    </head>
+    <body>
+        <div class="quote-box">
+            <div class="quote-text">
+                <span id="text">${quote}</span>
+            </div>
+            <div class="quote-author">
+                - <span id="author">${author}</span>
+            </div>
+        </div>
+    </body>
+</html>
+_EOF_

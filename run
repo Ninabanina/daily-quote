@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+#
+# Start up script. Install cronjobs and start crond, Set up github committer info
+
+set -e
+
+cd $(dirname $(realpath ${0}))
+
+source config
+
+git config --global user.email ${github_user_email}
+git config --global user.name ${github_user_name}
+
+# Add github.com to knownhosts so it wont prompt when git push
+mkdir ${HOME}/.ssh
+touch ${HOME}/.ssh/config
+cat <<EOF | tee ${HOME}/.ssh/config >&2 
+Host github.com
+    StrictHostKeyChecking no
+EOF
+
+# Install cronjobs
+crontab -l > cronjobs | true 
+
+if [[ ${commit_on_workday} -gt 0 ]]; then
+    workday_frequency=$((24/${commit_on_workday}))
+    echo ${workday_frequency}
+    echo "0 */${workday_frequency} * * 1-5 $(pwd)/updater 2>&1 >> /tmp/workday_log" >> cronjobs
+fi
+
+if [[ ${commit_on_weekend} -gt 0 ]]; then
+    weekend_frequency=$((24/${commit_on_weekend}))
+    echo ${weekend_frequency}
+    echo "0 */${weekend_frequency} * * 0,6 $(pwd)/updater 2>&1 >> /tmp/weekend_log" >> cronjobs
+fi
+
+crontab cronjobs
+rm cronjobs
+
+# Start crond and log everything
+rsyslogd
+cron
+touch /var/log/cron.log
+tail -F /var/log/syslog /var/log/cron.log
+

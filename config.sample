@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Your mashape identity key 
+mashape_key="M2IxMGIwMTE0ODk0YzA2NDc3YzcwMjc0YTc1YWNkMzRmNGViNm"
+
+# Categories of quotes. Available: movies/famous
+category="movies"
+
+# A list of commit messages being randomly picked every commit
+commit_messages=(
+    'Update Content'
+    'Bug fix'
+    'New Release'
+)
+
+# The likelihood of proceeding a commit everytime the script being run
+# with 0 being impossible and 10 being certain
+commit_likeliness=7
+
+#how many times try to commit a day
+commit_on_workday=12
+
+commit_on_weekend=2
+
+# Github Indentity
+github_user_name="John Doe"
+
+github_user_email="john.doe@github.com"
+
+github_ssh_key="mypk.key"
